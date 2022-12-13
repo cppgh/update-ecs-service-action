@@ -1,0 +1,36 @@
+name: Update ECS service
+description: 'Update ECS service'
+inputs:
+  cluster_name:
+    description: 'Cluster name'
+    required: true
+  service_name:
+    description: 'Service name'
+    required: true
+  task_definition:
+    description: 'Task definition'
+    required: true
+  aws_region:
+    description: 'AWS region'
+    required: true
+  aws_access_key_id:
+    description: 'AWS access key ID'
+    required: true
+  aws_secret_access_key:
+    description: 'AWS secret access key'
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Update ECS service
+      shell: bash
+      env:
+        AWS_REGION: ${{ inputs.aws_region }}
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+      run: |
+        aws ecs update-service \
+          --cluster ${{ inputs.cluster_name }} \
+          --service ${{ inputs.service_name }} \
+          --task-definition ${{ inputs.task_definition }} \
+          --force-new-deployment
